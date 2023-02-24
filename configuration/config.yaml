@@ -1,0 +1,31 @@
+sftp:
+  host: 10.0.0.144
+  port: 22
+  username: lordoftheabyss
+  password: 76
+  timeout: 720 #12 Minutes
+  path:
+    root: /mnt/sdc2/Movies
+
+logging:
+  file:
+    name: console-logs.log
+  format: '-- %(asctime)s -- %(levelname)s -- %(message)s'
+  date: '%H:%M:%S'
+
+triggers:
+  suffix: __NEW
+  allowed:
+    extensions: txt,mkv,avi,mp4,str
+    events: moved,created
+
+folders:
+ trigger: ./testFolder/
+ processed: ./testFolder/processed/
+ summary: ./testFolder/summary/
+ logs: ./testFolder/logs/
+
+summary:
+ file:
+  name: sftp-summary-file.csv
+ headers: TIMESTAMP,ORIGINAL_FILE_NAME,NEW_FILE_NAME (OPTIONAL),STATUS
