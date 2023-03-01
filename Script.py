@@ -4,8 +4,8 @@ import tkinter as tk
 import os
 from tkinter import filedialog
 import sys
-
 from collections import deque
+
 
 class Script:
     def __new__(cls, file_path, parent):
@@ -17,19 +17,28 @@ class Script:
         self.row = len(self.parent.scripts) + 1
 
         self.file_name = (self.file_path.split('/')[-1]).replace('.py', '')
-        self.working_directory = self.file_path.replace((self.file_path.split('/')[-1]), '')
+        self.working_directory = self.file_path.replace(
+            (self.file_path.split('/')[-1]), '')
 
-        self.file_path_label = tk.Label(self.parent.scripts_view.table, text=self.file_name, font="TkDefaultFont 9")
-        self.file_path_label.grid(row=self.row, column=0, padx=10, pady=5, sticky="w")
+        self.file_path_label = tk.Label(
+            self.parent.scripts_view.table, text=self.file_name, font="TkDefaultFont 9")
+        self.file_path_label.grid(
+            row=self.row, column=0, padx=10, pady=5, sticky="w")
 
-        self.status_label = tk.Label(self.parent.scripts_view.table, text="Running", font="TkDefaultFont 9")
-        self.status_label.grid(row=self.row, column=1, padx=10, pady=5, sticky="w")
+        self.status_label = tk.Label(
+            self.parent.scripts_view.table, text="Running", font="TkDefaultFont 9")
+        self.status_label.grid(row=self.row, column=1,
+                               padx=10, pady=5, sticky="w")
 
-        self.log_button = tk.Button(self.parent.scripts_view.table, text="Open Logs Folder", font="TkDefaultFont 9", command=self.open_logs)
-        self.log_button.grid(row=self.row, column=2, padx=10, pady=5, sticky="w")
+        self.log_button = tk.Button(self.parent.scripts_view.table,
+                                    text="Open Logs Folder", font="TkDefaultFont 9", command=self.open_logs)
+        self.log_button.grid(row=self.row, column=2,
+                             padx=10, pady=5, sticky="w")
 
-        self.kill_button = tk.Button(self.parent.scripts_view.table, text="Kill", font="TkDefaultFont 9", command=self.kill_script_button_impl)
-        self.kill_button.grid(row=self.row, column=3, padx=10, pady=5, sticky="w")
+        self.kill_button = tk.Button(self.parent.scripts_view.table, text="Kill",
+                                     font="TkDefaultFont 9", command=self.kill_script_button_impl)
+        self.kill_button.grid(row=self.row, column=3,
+                              padx=10, pady=5, sticky="w")
 
         self.is_running = True
 
@@ -40,16 +49,17 @@ class Script:
     def run(self):
         try:
             print(f'Generating Script Object: {self.file_path}')
-            self.process = subprocess.Popen(["python", self.file_path], cwd=self.working_directory, stdout=subprocess.PIPE, stderr=subprocess.PIPE, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP)
+            self.process = subprocess.Popen(["python", self.file_path], cwd=self.working_directory,
+                                            stdout=subprocess.PIPE, stderr=subprocess.PIPE, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP)
             print(f'PID for subprocess: {self.process.pid}')
             stat = ""
             while True:
                 if self.process.poll() is not None:
-                    if(self.is_running is not False):
+                    if (self.is_running is not False):
                         stat = 'err'
                         break
 
-            if stat == 'err': 
+            if stat == 'err':
                 self.script_death()
 
         except Exception as e:
@@ -58,14 +68,13 @@ class Script:
             print(f'in exceptions')
             # self.stop_script(self)
 
-
     def open_logs(self):
         folder_path = self.file_path.replace(self.file_path.split('/')[-1], "")
         if os.path.exists(folder_path + '/' + 'logs'):
             folder_path = folder_path + '/' + 'logs'
-        if sys.platform=='win32':
-            subprocess.Popen(['start', folder_path], shell= True)
-        elif sys.platform =='darwin':
+        if sys.platform == 'win32':
+            subprocess.Popen(['start', folder_path], shell=True)
+        elif sys.platform == 'darwin':
             subprocess.Popen(['open', d])
         else:
             try:
@@ -79,7 +88,7 @@ class Script:
     #     for line in stdout.decode().splitlines():
     #         lines.append(line.strip())
     #     text_content= '\n'.join(lines)
-    #     self.update_log_text(text_content)   
+    #     self.update_log_text(text_content)
 
     # def enable_logging(self):
     #     print(f'{self.file_path}\'s log button was clicked.')
@@ -101,7 +110,7 @@ class Script:
     #     self.parent.active_log_script = self
 
     # def update_log_text(self, updated_text):
-    #     self.parent.logs_view.logs_text.configure(state='normal')    
+    #     self.parent.logs_view.logs_text.configure(state='normal')
     #     self.parent.logs_view.logs_text.delete("1.0", tk.END)
     #     self.parent.logs_view.logs_text.insert(tk.END, f'{updated_text}')
     #     self.parent.logs_view.logs_text.configure(state='disabled')
