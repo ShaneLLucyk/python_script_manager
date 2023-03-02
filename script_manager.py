@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import filedialog, ttk
-# from apscheduler.schedulers.background import BackgroundScheduler
 from Script import Script
 
 
@@ -16,11 +15,13 @@ class Application():
         # self.log_scheduler.start()
 
     def create_widgets(self):
+        """_summary_
+        """
         self.root = tk.Tk()
         self.root.title("Python Script Log Viewer")
         self.root.minsize(250, 500)
         self.root.wm_state('iconic')
-        self.root.wm_iconbitmap('./configuration/fire.ico')
+        self.root.wm_iconbitmap('./assets/images/fire.ico')
 
         self.tab_controller = ttk.Notebook(self.root)
         self.scripts_view = tk.Frame(self.tab_controller)
@@ -41,6 +42,8 @@ class Application():
     #     self.tab_controller.add(self.logs_view, text='Logs')
 
     def generate_scripts_view(self):
+        """_summary_
+        """
         # Frame Details for Script Selection & Table
         self.scripts_view.button_select = tk.Button(
             self.scripts_view, text='Select Python Script', command=self.select_script)
@@ -60,12 +63,14 @@ class Application():
     def select_script(self):
         file_path = filedialog.askopenfilename(
             filetypes=[("Python files", "*.py")])
-        if file_path != None:
-            if file_path not in self.script_paths:
-                print(f"Starting script: {file_path}")
-                self.script_paths.append(file_path)
-                script = Script(file_path, self)
-                self.scripts.append(script)
+        
+        if file_path is None or file_path == '' or file_path in self.script_paths:
+            return
+        
+        print(f"Starting script: {file_path}")
+        self.script_paths.append(file_path)
+        script = Script(file_path, self)
+        self.scripts.append(script)
 
     def start(self):
         # Run the Tkinter event loop
